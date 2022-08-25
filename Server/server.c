@@ -11,11 +11,11 @@
 #include "../Application/app.h"
 #include "../Server/server.h"
 
-ST_accountsDB_t accountsDB_array[255] = {	{ 20000 , "20522522545621556" },
-											{ 30000 , "20522522545621557" },
-											{ 15000 , "20522522545621558" },
-											{ 1800 ,  "20522522545621559" },
-											{ 6000 ,  "20522522545621550" }
+ST_accountsDB_t accountsDB_array[255] = {	{ 20000 , "20522522545621556" , 0},
+											{ 30000 , "20522522545621557" , 0},
+											{ 15000 , "20522522545621558" , 0},
+											{ 1800 ,  "20522522545621559" , 0},
+											{ 6000 ,  "20522522545621550" , 1}
 };
 ST_transaction_t transaction_array[255];
 int transaction_array_last = 0;
@@ -36,22 +36,30 @@ EN_transState_t recieveTransactionData(ST_transaction_t* transData)
 		if (!strcmp(accountsDB_array[r].primaryAccountNumber, x.primaryAccountNumber))
 			
 		{
-
-			if (accountsDB_array[r].balance >= y.transAmount)
+			if (accountsDB_array[r].is_blocked == 0)
 			{
-				transaction_array[transaction_array_last].cardHolderData = x;
-				transaction_array[transaction_array_last].terminalData = y;
-				accountsDB_array[r].balance -= y.transAmount;
-				transaction_array[transaction_array_last].transactionSequenceNumber = transaction_array_last;
-				transaction_array[transaction_array_last].transState = APPROVED;
-				transaction_array_last++;
-				return APPROVED;
+
+				if (accountsDB_array[r].balance >= y.transAmount)
+				{
+					transaction_array[transaction_array_last].cardHolderData = x;
+					transaction_array[transaction_array_last].terminalData = y;
+					accountsDB_array[r].balance -= y.transAmount;
+					transaction_array[transaction_array_last].transactionSequenceNumber = transaction_array_last;
+					transaction_array[transaction_array_last].transState = APPROVED;
+					transaction_array_last++;
+					return APPROVED;
+				}
+				else
+				{
+					return DECLINED_INSUFFECIENT_FUND;
+				}
 			}
 			else
 			{
-				return DECLINED_INSUFFECIENT_FUND;
+				return DECLINED_STOLEN_CARD;
+
 			}
-			
+
 		}
 
 	}

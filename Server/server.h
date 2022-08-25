@@ -19,6 +19,7 @@ typedef struct ST_accountsDB_t
 {
 	float balance;
 	uint8_t primaryAccountNumber[20];
+	int is_blocked;
 }ST_accountsDB_t;
 
 
