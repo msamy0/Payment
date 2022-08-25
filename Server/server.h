@@ -7,8 +7,22 @@
 #include "../Card/card.h"
 #include "../Terminal/terminal.h"
 
+typedef struct 
+{
+	ST_cardData_t serverData;
+	float bankMoney;
+	uint8_t suspendedFlag;
+    
+}clientsDataBase_t;
+/* 
+clientsDataBase_t dataBaseArr[5] ={ {{"Abdelhai Mohamed Tahoon", "20522522545621556", "04/25"}, 80000, 0},
+								   	{{"Abdelrahman Tarek Atia" , "20522522512354234", "04/25"}, 80000, 0},
+									{{"Maged Ahmed Elgazzzar"  , "20522522545621444", "04/25"}, 90000, 0},
+									{{"Mohamed Samy Abdelgawad", "20522522549999999", "04/25"}, 20000, 0},
+									{{"Amr Ragab Eisa Ragab"   , "20577522546666666", "07/23"}, 84000, 0}
+								  };
 
-
+ */
 typedef enum EN_transState_t
 {
 	APPROVED, DECLINED_INSUFFECIENT_FUND, DECLINED_STOLEN_CARD, INTERNAL_SERVER_ERROR

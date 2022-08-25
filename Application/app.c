@@ -10,12 +10,19 @@
 
 
 
+
+
+
 void appStart(void)
 {
 	
 	ST_cardData_t cardData;
 	ST_terminalData_t terminalData;
-	
+
+
+
+
+
 	// while (getCardHolderName(&cardData))
 	// 	puts("\nXXX Error in input, Please Try again or click ( CTRL + C ) to terminate ! XXX\n");
 	
@@ -27,9 +34,42 @@ void appStart(void)
 
 
 	
-	 while (getTransactionDate(&terminalData))
+	while (getTransactionDate(&terminalData))
 		puts("\nXXX Error in input, Please Try again or click ( CTRL + C ) to terminate ! XXX\n");
-	isCardExpired(cardData, terminalData);
+	
+	
+	
+	if(isCardExpired(cardData, terminalData) ==	 TERM_OK)
+	{
+		/* continue */
+		
+		while (getTransactionAmount(&terminalData) != TERM_OK)
+		{
+			printf("Enter Correct transaction amount \n");	
+		}
+
+		setMaxAmount(&terminalData);
+
+		if(isBelowMaxAmount(&terminalData) == TERM_OK)
+		{
+		/* continue  */
+		
+		}
+		else
+		{
+			printf("Declined amount exceeded limit");
+		}
+
+		
+
+
+
+	}
+	else
+	{
+		printf("Expired Cared  \n");
+
+	}
 
 
 

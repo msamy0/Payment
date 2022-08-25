@@ -43,12 +43,12 @@ EN_terminalError_t isCardExpired(ST_cardData_t cardData, ST_terminalData_t termD
         }
         else 
         {
-            printf("Exoried \n");
+            // printf("Expired \n");
             return EXPIRED_CARD;
         }
     }else 
     {
-            printf("Exoried \n");
+            // printf("Expired \n");
             return EXPIRED_CARD;
     }
 
@@ -75,14 +75,15 @@ EN_terminalError_t setMaxAmount(ST_terminalData_t* termData)
 
 EN_terminalError_t getTransactionAmount(ST_terminalData_t* termData)
 {
-if(termData->transAmount <=0)
-{
-    return INVALID_AMOUNT;
-} 
-else 
-{
-   return TERM_OK;
-}
+    scanf("%f",termData->transAmount);
+    if(termData->transAmount <=0)
+    {
+        return INVALID_AMOUNT;
+    } 
+    else 
+    {
+        return TERM_OK;
+    }
 }
 
 
