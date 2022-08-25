@@ -99,6 +99,7 @@ void appStart(void)
 int main()
 {
 	int choise = -1;
+	char buffer;
 	while (1)
 	{
 
