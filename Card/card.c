@@ -11,11 +11,17 @@
 #include "../Application/app.h"
 #include "../Server/server.h"
 
+
+
 EN_cardError_t getCardHolderName(ST_cardData_t* cardData)
 {
-	
+	fflush(stdin);
 	printf("Kindly, input your Card Holder Name \nKeep in mind that it cannot exceed 24 characters \n");
+	
+	fflush(stdin);
 	gets(cardData->cardHolderName);
+	fflush(stdin);
+
 	//printf("Card Holder Name you input is : %s \n", cardData->cardHolderName);
 
 	if (strlen(cardData->cardHolderName) > 24		||

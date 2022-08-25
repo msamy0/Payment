@@ -3,14 +3,14 @@
 #include <stdint.h>
 
 //Project libraries definations
+#include "../Server/server.h"
 #include "../Card/card.h"
 #include "../Terminal/terminal.h"
 #include "../Application/app.h"
-#include "../Server/server.h"
 
-
-
-
+extern ST_accountsDB_t accountsDB_array[255];
+extern ST_transaction_t transaction_array[255];
+extern int transaction_array_last;
 
 
 void appStart(void)
@@ -43,10 +43,9 @@ void appStart(void)
 		}
 
 		setMaxAmount(&terminalData);
-
 		if(isBelowMaxAmount(&terminalData) == TERM_OK)
 		{
-		
+
 			transData.cardHolderData = cardData;
 			transData.terminalData = terminalData;
 
@@ -55,7 +54,7 @@ void appStart(void)
 
 			if (trans_status == APPROVED)
 			{
-				/* continue  */
+				printf("Approved \n");
 			}
 			else if (trans_status == DECLINED_INSUFFECIENT_FUND)
 			{
@@ -99,29 +98,31 @@ void appStart(void)
 
 int main()
 {
-	char choise = 'A';
-	for (;;)
+	int choise = -1;
+	while (1)
 	{
+
 		appStart();
+		printf("\n Do you want to repeat the process again ? \n Make a number choice : \n (1) Yes \n (2) No \n");
+		
+;		fflush(stdin);
+		scanf("%d", &choise);
+		fflush(stdin);
 
-		askAgain:
 
-		puts("\n Do you want to repeat the process again ? \n Make a number choice : \n (Y) Yes \n (N) No");
-		gets(choise);
-		if (choise == 'Y')
+		if (choise == 1)
 		{
+			choise = -1;
 			continue;
 		}
 
-		else if (choise == 'N')
+		else if (choise == 2)
 		{
+			choise = -1;
 			break;
 		}
 
-		else
-		{
-			goto askAgain;
-		}
+		
 	}
 
 	return 0;
