@@ -13,6 +13,7 @@ extern ST_transaction_t transaction_array[255];
 extern int transaction_array_last;
 
 
+
 void appStart(void)
 {
 	

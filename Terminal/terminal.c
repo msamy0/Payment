@@ -45,18 +45,18 @@ EN_terminalError_t isCardExpired(ST_cardData_t cardData, ST_terminalData_t termD
     {
         if (currentMonth <= cardExpMonth)
         {
-            //printf("ok is ok \n");
+            printf("ok is ok \n");
             return TERM_OK;
         }
         else
         {
-            //printf("Expired Month \n");
+            printf("Expired Month \n");
             return EXPIRED_CARD;
         }
     }
     else 
     {
-        //printf("Expired Year \n");
+        printf("Expired Year \n");
         return EXPIRED_CARD;
     }
 
