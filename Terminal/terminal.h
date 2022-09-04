@@ -8,6 +8,7 @@
 #include "../Card/card.h"
 
 #define MAX_AMOUNT_LIMIT 8000 /* macro for the maximum amount of the data */
+
 typedef struct ST_terminalData_t
 {
 	float transAmount;

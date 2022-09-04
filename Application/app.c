@@ -97,20 +97,18 @@ void appStart(void)
 
 
 
-int main()
+int main1()
 {
 	int choise = -1;
-	char buffer;
 	while (1)
 	{
 
 		appStart();
+
 		printf("\n Do you want to repeat the process again ? \n Make a number choice : \n (1) Yes \n (2) No \n");
-		
 ;		fflush(stdin);
 		scanf("%d", &choise);
 		fflush(stdin);
-
 
 		if (choise == 1)
 		{
@@ -123,9 +121,7 @@ int main()
 			choise = -1;
 			break;
 		}
-
 		
 	}
-
 	return 0;
 }
