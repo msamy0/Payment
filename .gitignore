@@ -3,3 +3,5 @@
 .vscode/**
 x64/**
 
+*.filters
+*.vcxproj
