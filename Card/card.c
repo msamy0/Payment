@@ -129,7 +129,7 @@ EN_cardError_t getCardPAN(ST_cardData_t* cardData)
 	/*------------------------------------------------------------------------------------*/
 
 	
-
+	/*Check Pan lenght and Luhn algorithm check*/
 	if	(	strlen(cardData->primaryAccountNumber) > 19		||
 			strlen(cardData->primaryAccountNumber) < 16		||
 			Luhn_flag == 0

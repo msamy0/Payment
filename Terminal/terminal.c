@@ -1,26 +1,29 @@
-//System liberary definations
+//System libraries
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
+#include <inttypes.h>
+#include <stdlib.h>
+#include <time.h>
 
-//Project libraries definations
+//Project libraries
 #include "../Card/card.h"
 #include "../Terminal/terminal.h"
 #include "../Application/app.h"
 #include "../Server/server.h"
 
 
-
 EN_terminalError_t getTransactionDate(ST_terminalData_t* termData)
 {
-	printf("Kindly, input Transaction Date \nKeep in mind that it must be in DD/MM/YYYY formate \n");
-	gets(termData->transactionDate);
+	//printf("Kindly, input Transaction Date \n Keep in mind that it must be in DD/MM/YYYY formate \n");
+	//gets(termData->transactionDate);
 
-	if (	strlen(termData->transactionDate) != 10		||
-			(termData->transactionDate[2]) != '/'	    ||
-			(termData->transactionDate[5]) != '/') 			
-		return WRONG_DATE;
-	else
-		return TERM_OK;
+	//if (	strlen(termData->transactionDate) != 10		||
+	//		(termData->transactionDate[2]) != '/'	    ||
+	//		(termData->transactionDate[5]) != '/') 			
+	//	return WRONG_DATE;
+	//else
+	//	return TERM_OK;
 
 }
 EN_terminalError_t isCardExpired(ST_cardData_t cardData, ST_terminalData_t termData)

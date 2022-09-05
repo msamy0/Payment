@@ -12,7 +12,7 @@ extern ST_accountsDB_t accountsDB_array[255];
 extern ST_transaction_t transaction_array[255];
 extern int transaction_array_last;
 
-int main()
+int TestCard()
 {
 	ST_cardData_t cardData;
 	

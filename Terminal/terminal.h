@@ -6,14 +6,14 @@
 #include <stdint.h>
 #include <string.h>
 #include "../Card/card.h"
-
-#define MAX_AMOUNT_LIMIT 8000 /* macro for the maximum amount of the data */
+/*Setting the maximum amount for the terminal in the device internal frimware as it is more sensible */
+#define MAX_AMOUNT_LIMIT 8000
 
 typedef struct ST_terminalData_t
 {
-	float transAmount;
-	float maxTransAmount;
-	uint8_t transactionDate[11];
+	float transAmount; /* User input for transaction*/
+	float maxTransAmount; /* Value to be set by the terminal*/
+	uint8_t transactionDate[11]; /* Date of the process*/
 }ST_terminalData_t;
 
 

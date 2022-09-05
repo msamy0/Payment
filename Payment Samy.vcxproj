@@ -132,6 +132,7 @@
     <ClCompile Include="Server\server.c" />
     <ClCompile Include="Terminal\terminal.c" />
     <ClCompile Include="TestingOnly\TestCard.c" />
+    <ClCompile Include="TestingOnly\TestTerminal.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\app.h" />
