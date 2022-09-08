@@ -12,6 +12,19 @@
 #include "../Application/app.h"
 #include "../Server/server.h"
 
+EN_terminalError_t setMaxAmount(ST_terminalData_t* termData)
+{
+    /* A pre-defined macro in the terminal.h header file. if it is not zero, this function will put it into the maxTransAmount member*/
+    if (MAX_AMOUNT_LIMIT <= 0)
+    {
+        return INVALID_MAX_AMOUNT;
+    }
+    else
+    {
+        termData->maxTransAmount = MAX_AMOUNT_LIMIT;
+        return TERM_OK;
+    }
+}
 
 EN_terminalError_t getTransactionDate(ST_terminalData_t* termData)
 {
@@ -62,8 +75,9 @@ EN_terminalError_t getTransactionDate(ST_terminalData_t* termData)
         (termData->transactionDate[2]) != '/' ||
         (termData->transactionDate[5]) != '/')
     {
-        return WRONG_DATE;
+            return WRONG_DATE;
     }
+
     else
     {
         return TERM_OK;
@@ -71,63 +85,99 @@ EN_terminalError_t getTransactionDate(ST_terminalData_t* termData)
 
 
 }
+
 EN_terminalError_t isCardExpired(ST_cardData_t cardData, ST_terminalData_t termData)
 {
-    uint8_t cardExpMonth = (cardData.cardExpirationDate[1] - '0') * 10 + (cardData.cardExpirationDate[0] - '0');
-    uint8_t cardExpYear = (cardData.cardExpirationDate[4] - '0') * 10 + (cardData.cardExpirationDate[3] - '0');
-    // printf ("fist month Digit is %c \n",cardData.cardExpirationDate[0]);
-    // printf ("second month Digit is %c \n",cardData.cardExpirationDate[1]);
+    /*  - Convertion of string month and year values to decimal values to be comparable
+        - substracting any number in ASCII code from zero charater gives us the decimal value of the number
+        - multipling 10's digit by 10 to reproduce a two real integer value for month and year    
+        - summing the 10's digit with the 1's digit gives us the true value of the month or the year  */
 
-    // printf ("fist year Digit is %c \n",cardData.cardExpirationDate[3]);
-    // printf ("second Year Digit is %c \n",cardData.cardExpirationDate[4]);
+    uint8_t cardExpMonth = (cardData.cardExpirationDate[0] - '0') * 10 + (cardData.cardExpirationDate[1] - '0');
+    uint8_t cardExpYear = (cardData.cardExpirationDate[3] - '0') * 10 + (cardData.cardExpirationDate[4] - '0');
+    uint8_t currentMonth = (termData.transactionDate[3] - '0') * 10 + (termData.transactionDate[4] - '0');
+    uint8_t currentYear = (termData.transactionDate[8] - '0') * 10 + (termData.transactionDate[9] - '0');
 
-    uint8_t currentMonth = (termData.transactionDate[4] - '0') * 10 + (termData.transactionDate[3] - '0');
-    uint8_t currentYear = (termData.transactionDate[9] - '0') * 10 + (termData.transactionDate[8] - '0');
-
+    /* Comparing the years with each others and if it passes, then no need to check month */
     if (currentYear < cardExpYear)
+
     {
-        printf("ok is ok \n");
+        //printf("year is ok \n");
         return TERM_OK;
     }
+
+    /* if years are equal, then check against months. keep in mind if the card is still in the last month, it is dealed as a valid card */
     else if (currentYear == cardExpYear)
     {
         if (currentMonth <= cardExpMonth)
         {
-            printf("ok is ok \n");
+            //printf("Month is ok 1 \n");
             return TERM_OK;
         }
         else
         {
-            printf("Expired Month \n");
+            //printf("Expired Card (Month Check) \n");
             return EXPIRED_CARD;
         }
     }
     else 
     {
-        printf("Expired Year \n");
+        //printf("Expired Card (Year Check) \n");
         return EXPIRED_CARD;
     }
 
 }
 
-
-/* function for presetting the maximum amount for each transaction 8000LE */
-EN_terminalError_t setMaxAmount(ST_terminalData_t* termData)
+EN_terminalError_t isValidCardPAN(ST_cardData_t* cardData)
 {
-    if(MAX_AMOUNT_LIMIT <= 0)
+    /*------------------------------------------------------------------------------------*/
+/* Start Luhn Algorithm Check */
+
+/* Initialize Luhn_flag value ( -1 -> initial , 1 -> passed , 0 -> failed ) */
+    uint8_t Luhn_flag = -1;
+
+    /* Dynamicall allocate a new Luhn_arr in the size of CardPAN string size to save memory */
+    uint8_t* Luhn_arr = (uint8_t*)malloc(strlen(cardData->primaryAccountNumber) * sizeof(uint8_t));
+
+    /* create static Luhn weights array */
+    uint8_t Luhn_weight[20] = { 2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1 };
+
+    /* Luhn_sum is used to determine summing of Luhn number generated after multiplication */
+    uint8_t Luhn_sum = 0;
+
+    /*Loop through Luhn_arr limited to it dynamically allocated size which is determind using _msize function*/
+    for (int i = 0; i < _msize(Luhn_arr); i++)
     {
-        return INVALID_MAX_AMOUNT;
+        /*Get each number from CardPAN and multiply it by Luhn weights then save it into Luhn_array*/
+        Luhn_arr[i] = (cardData->primaryAccountNumber[i] - '0') * Luhn_weight[i];
+
+        /* check whether the number is consist of two digits or not, if though, sum the two digit and overwrite them*/
+        if (Luhn_arr[i] > 9)
+        {
+            Luhn_arr[i] = (Luhn_arr[i] % 10) + 1;
+
+        }
+
+        /*sum Luhn_arr digits after all operations to determin the final value*/
+        Luhn_sum += Luhn_arr[i];
+    }
+
+    /* if Luhn_sum ends with 0 then its is a valid PAN number*/
+    if (Luhn_sum % 10 == 0)
+    {
+        Luhn_flag = 1;
+        return TERM_OK;
+        
     }
     else
     {
-        termData->maxTransAmount = MAX_AMOUNT_LIMIT;
-        return TERM_OK;
+        Luhn_flag = 0;
+        return INVALID_CARD;
     }
+
+    /* End Luhn Algorithm Check */
+    /*------------------------------------------------------------------------------------*/
 }
-
-
-
-//EN_terminalError_t isValidCardPAN(ST_cardData_t* cardData);
 
 EN_terminalError_t getTransactionAmount(ST_terminalData_t* termData)
 {
