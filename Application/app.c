@@ -34,7 +34,8 @@ void appStart(void)
 	while (getTransactionDate(&terminalData))
 		puts("\nXXX Error in input, Please Try again or click ( CTRL + C ) to terminate ! XXX\n");
 		
-	
+/*---------------------------------------------------------------------------------*/
+
 	if(isCardExpired(cardData, terminalData) ==	 TERM_OK)
 	{
 				

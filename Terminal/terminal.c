@@ -15,15 +15,60 @@
 
 EN_terminalError_t getTransactionDate(ST_terminalData_t* termData)
 {
-	//printf("Kindly, input Transaction Date \n Keep in mind that it must be in DD/MM/YYYY formate \n");
-	//gets(termData->transactionDate);
+    /* initialization string variables to save date portions retrived from time() function */
+    uint8_t temp_day_str[3] ="\0";
+    uint8_t temp_month_str[3] = "\0";
+    uint8_t temp_year_str[5] = "\0";
 
-	//if (	strlen(termData->transactionDate) != 10		||
-	//		(termData->transactionDate[2]) != '/'	    ||
-	//		(termData->transactionDate[5]) != '/') 			
-	//	return WRONG_DATE;
-	//else
-	//	return TERM_OK;
+    /* initialization of transactionDate member with NULL to avoid expceptional handeling while using strcat() function */
+    for (int i = 0; i < sizeof(termData->transactionDate); i++)
+    {
+        termData->transactionDate[i] = NULL;
+    }
+
+    /* Using builtin function time() to fetch the current PC time and save it a pre-defined struct in time.h header*/
+    time_t Current_t = time(NULL);
+    struct tm Current_Time = *localtime(&Current_t);
+
+    /* Using sprintf() function to convert Current.Time integer members to string values. Keep in mind time() function fetches time then
+    push it back as integer numbers in the Current.Time struct members, representing each portion of time (day, month, year, hour, ..etc) */
+    sprintf(temp_day_str,   "%d", Current_Time.tm_mday);
+    sprintf(temp_month_str, "%d", Current_Time.tm_mon+1);/*Months from 0 to 11 */
+    sprintf(temp_year_str,  "%d", Current_Time.tm_year+1900); /* Years counting from 0 to infinity, representing (1900) year as (0) */
+    
+    /* Checks if the day is one digit value to add 0 before it for a consistant date formate */
+    if (strlen(temp_day_str) < 2)
+    {
+        temp_day_str[1] = temp_day_str[0];
+        temp_day_str[0] = '0';
+    }
+
+    /* Checks if the month is one digit value to add 0 before it for a consistant date formate */
+    if (strlen(temp_month_str) < 2)
+    {
+        temp_month_str[1] = temp_month_str[0];
+        temp_month_str[0] = '0';
+    }
+
+    /* copying fetched date to terminal data date member by refernce */
+    strcpy(termData->transactionDate, temp_day_str);
+    strcat(termData->transactionDate, "/");
+    strcat(termData->transactionDate, temp_month_str);
+    strcat(termData->transactionDate, "/");
+    strcat(termData->transactionDate, temp_year_str);
+
+    /* Check for the date format to make sure it matchs the Rubric reglations (it was only useful if date is entered manually !)*/
+    if (strlen(termData->transactionDate) != 10 ||
+        (termData->transactionDate[2]) != '/' ||
+        (termData->transactionDate[5]) != '/')
+    {
+        return WRONG_DATE;
+    }
+    else
+    {
+        return TERM_OK;
+    }
+
 
 }
 EN_terminalError_t isCardExpired(ST_cardData_t cardData, ST_terminalData_t termData)
