@@ -30,7 +30,13 @@
     <ClCompile Include="Terminal\terminal.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestingOnly\TestTerminal.c">
+    <ClCompile Include="TestingOnly\TestServer1.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestingOnly\TestServer2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestingOnly\TestServer3.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -8,18 +8,15 @@
 #include "../Terminal/terminal.h"
 #include "../Application/app.h"
 
-extern ST_accountsDB_t accountsDB_array[255];
-extern ST_transaction_t transaction_array[255];
-extern int transaction_array_last;
 
 
-
-int appStart()
+void appStart(void)
 {
 
 	ST_cardData_t cardData;
 	ST_terminalData_t terminalData;
 	ST_transaction_t transData;
+	
 
 	setMaxAmount(&terminalData);
 
@@ -35,52 +32,45 @@ int appStart()
 	if (getTransactionDate(&terminalData) == TERM_OK)
 	{
 	
-		if (!isValidCardPAN(&cardData))
+		if (isValidCardPAN(&cardData) == CARD_OK)
 		{
 			if (isCardExpired(cardData, terminalData) == TERM_OK)
 			{
-
 				while (getTransactionAmount(&terminalData) != TERM_OK)
 				{
-					printf("Enter Correct transaction amount \n");
+					printf("Enter Correct transaction amount !! \n");
 				}
 
 				if (isBelowMaxAmount(&terminalData) == TERM_OK)
 				{
-
 					transData.cardHolderData = cardData;
 					transData.terminalData = terminalData;
-
-					EN_transState_t trans_status = -1;
-					trans_status = recieveTransactionData(&transData);
-
-					if (trans_status == APPROVED)
+					if (recieveTransactionData(&transData) == APPROVED)
 					{
-						printf("Approved \n");
-					}
-					else if (trans_status == DECLINED_INSUFFECIENT_FUND)
-					{
-						printf("Error : Insuffcient Fund ! \n");
+						/* Do the getTransaction check*/
 
 					}
-
-					else if (trans_status == DECLINED_STOLEN_CARD)
+					else if (recieveTransactionData(&transData) == DECLINED_INSUFFECIENT_FUND)
 					{
-						printf("Error : Stolen Card ! \n");
+						printf("Error : DECLINED_INSUFFECIENT_FUND \n");
+					}
+					else if (recieveTransactionData(&transData) == DECLINED_STOLEN_CARD)
+					{
+						printf("Error : DECLINED_STOLEN_CARD \n");
+					}
+					else if (recieveTransactionData(&transData) == INTERNAL_SERVER_ERROR)
+					{
+						printf("Error : INTERNAL_SERVER_ERROR \n");
 					}
 
-					else if (trans_status == INTERNAL_SERVER_ERROR)
-					{
-						printf("Error : Server is Full ! \n");
-					}
 
 				}
 				else
 				{
-					printf("Declined amount, exceeded limit \n");
+					printf("Declined amount, exceeded max limit \n");
 				}
 
-
+				
 			}
 			else
 			{
@@ -102,7 +92,7 @@ int appStart()
 
 
 
-int main1()
+int main11()
 {
 	int choise = -1;
 	while (1)
@@ -111,7 +101,7 @@ int main1()
 		appStart();
 
 		printf("\n Do you want to repeat the process again ? \n Make a number choice : \n (1) Yes \n (2) No \n");
-;		fflush(stdin);
+		fflush(stdin);
 		scanf("%d", &choise);
 		fflush(stdin);
 

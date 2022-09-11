@@ -56,21 +56,21 @@ EN_terminalError_t getTransactionDate(ST_terminalData_t* termData)
         temp_day_str[0] = '0';
     }
 
-    /* Checks if the month is one digit value to add 0 before it for a consistant date formate */
+    /* Checks if the month is one digit value to add 0 before it for a consistent date formate */
     if (strlen(temp_month_str) < 2)
     {
         temp_month_str[1] = temp_month_str[0];
         temp_month_str[0] = '0';
     }
 
-    /* copying fetched date to terminal data date member by refernce */
+    /* copying fetched date to terminal data date member by reference */
     strcpy(termData->transactionDate, temp_day_str);
     strcat(termData->transactionDate, "/");
     strcat(termData->transactionDate, temp_month_str);
     strcat(termData->transactionDate, "/");
     strcat(termData->transactionDate, temp_year_str);
 
-    /* Check for the date format to make sure it matchs the Rubric reglations (it was only useful if date is entered manually !)*/
+    /* Check for the date format to make sure it matches the Rubric regulations (it was only useful if date is entered manually !)*/
     if (strlen(termData->transactionDate) != 10 ||
         (termData->transactionDate[2]) != '/' ||
         (termData->transactionDate[5]) != '/')
@@ -88,9 +88,9 @@ EN_terminalError_t getTransactionDate(ST_terminalData_t* termData)
 
 EN_terminalError_t isCardExpired(ST_cardData_t cardData, ST_terminalData_t termData)
 {
-    /*  - Convertion of string month and year values to decimal values to be comparable
-        - substracting any number in ASCII code from zero charater gives us the decimal value of the number
-        - multipling 10's digit by 10 to reproduce a two real integer value for month and year    
+    /*  - Conversion of string month and year values to decimal values to be comparable
+        - subtracting any number in ASCII code from zero character gives us the decimal value of the number
+        - multiplying 10's digit by 10 to reproduce a two real integer value for month and year    
         - summing the 10's digit with the 1's digit gives us the true value of the month or the year  */
 
     uint8_t cardExpMonth = (cardData.cardExpirationDate[0] - '0') * 10 + (cardData.cardExpirationDate[1] - '0');
@@ -181,13 +181,14 @@ EN_terminalError_t isValidCardPAN(ST_cardData_t* cardData)
 
 EN_terminalError_t getTransactionAmount(ST_terminalData_t* termData)
 {
-
+    /* Using puts to show an input request*/
     puts("Enter desired cash amount \n");
     
-    fflush(stdin);
+    /*Get the user amount and put it in the transAmount member in term data*/
     scanf("%f",&termData->transAmount);
-    fflush(stdin);
-
+    fflush(stdin); /* Flushing the STD*/
+    
+    /* CHeck whether it is  0 or not */
     if(termData->transAmount <=0)
     {
         puts("INVALID_AMOUNT \n");
@@ -200,17 +201,17 @@ EN_terminalError_t getTransactionAmount(ST_terminalData_t* termData)
     }
 }
 
-
 EN_terminalError_t isBelowMaxAmount(ST_terminalData_t* termData)
 {
+    /* Check whether it is below the macimum allowable amount or not*/
     if(termData->transAmount > termData->maxTransAmount)
-{
-    return EXCEED_MAX_AMOUNT;
-} 
-else 
-{
-   return TERM_OK;
-}
+    {
+        return EXCEED_MAX_AMOUNT;
+    } 
+    else 
+    {
+        return TERM_OK;
+    }
 
 }
 
