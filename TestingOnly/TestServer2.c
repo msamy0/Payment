@@ -13,7 +13,7 @@
 #include "../Application/app.h"
 #include "../Server/server.h"
 
-int main2()
+int isAmountavailableTest()
 {	
 	ST_terminalData_t terminalData;
 	ST_terminalData_t* termData = &terminalData;

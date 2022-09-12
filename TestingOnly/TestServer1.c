@@ -13,7 +13,7 @@
 #include "../Application/app.h"
 #include "../Server/server.h"
 
-int main1()
+int isValidAccountTest()
 {	
 	ST_cardData_t cardData;
 	long record_pos_in_DB = 0;

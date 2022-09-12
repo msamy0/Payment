@@ -14,7 +14,7 @@
 #include "../Server/server.h"
 
 
-int main()
+int saveTransactionTest()
 {	/***************************initializations for Testing ONLY !***************************/
 	ST_transaction_t transactionsData;
 	ST_transaction_t* transData = &transactionsData;

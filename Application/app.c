@@ -92,7 +92,7 @@ void appStart(void)
 
 
 
-int main11()
+int main()
 {
 	int choise = -1;
 	while (1)
