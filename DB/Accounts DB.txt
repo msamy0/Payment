@@ -1,7 +1,7 @@
-Name						PAN						Balance
+Name				PAN				Balance
 Mohamed Samy Ahmed Afify	,20522522545621551,		2000$
 Ali Mohamed Ahmed Said		,20522522545621552,		5000$
 Ramy Saber Fayed Ahmed		,20522522545621553,		13000$
-Gaber Said Wael Noah		,20522522545621554,		13000$
+Gaber Said Wael Noah		,20522522545621554,		24000$
 Noha Mahmoud Ramy Maged		,20522522545621555,		8500$
 Farida Mohammed Ayman		,20522522545621556,		500$

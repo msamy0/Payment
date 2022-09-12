@@ -13,6 +13,7 @@
 #include "../Terminal/terminal.h"
 #include "../Server/server.h"
 
+#define MAX_RECORD_SIZE 256
 
 typedef struct ST_accountsDB_t
 {
