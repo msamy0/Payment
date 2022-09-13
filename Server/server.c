@@ -71,7 +71,7 @@ EN_serverError_t isValidAccount(ST_cardData_t* cardData, long* record_pos_in_DB)
 		/* if the PAN is found, then break from (Loop1)*/
 		if (!strcmp_result)
 		{
-
+			*record_pos_in_DB = ftell(acc_DB_file_ptr);
 			break;
 		}
 
@@ -83,30 +83,37 @@ EN_serverError_t isValidAccount(ST_cardData_t* cardData, long* record_pos_in_DB)
 
 
 	/* Close the file using fclose() function */
-	fclose(acc_DB_file_ptr);
-
-	/* Free file pointer memory (save memory!) */
-	free(acc_DB_file_ptr);
-
-	puts(strcmp_result == 0 ? "Valid" : "Not");
-	if (!strcmp_result)
+	if (fclose(acc_DB_file_ptr) == 0)
 	{
-		return SERV_OK;
+		//puts(strcmp_result == 0 ? "Valid" : "Not");
+		if (!strcmp_result)
+		{
+			return SERV_OK;
+		}
+		else
+		{
+			return ACCOUNT_NOT_FOUND;
+		}
 	}
 	else
 	{
 		return ACCOUNT_NOT_FOUND;
 	}
 
+
+
 }
 EN_serverError_t isAmountAvailable(ST_terminalData_t* termData, long* record_pos_in_DB)
 {
-
-
 	/* Pointer to the file retrieved from fopen() function */
-	FILE* acc_DB_file_ptr;
+	FILE* acc_DB_file_ptr=0;
 	/* assign pointer to the DB file in which accounts are stored using fopen() function in "r" read only mode */
 	acc_DB_file_ptr = fopen("./DB/Accounts DB.txt", "r");
+	if (acc_DB_file_ptr == NULL)
+	{
+		printf("Error opening file(s) \n");
+		return SAVING_FAILED;
+	}
 
 	/* Temporary buffer for the fetched characters */
 	char temp_char_holder[2] = "\0";
@@ -118,7 +125,7 @@ EN_serverError_t isAmountAvailable(ST_terminalData_t* termData, long* record_pos
 	/*	Seek to cursor to the position of the record fetched by the function isValidAccount, so that we could fetch the
 		account available balance without re-fetching the PAN number to get the record again consuming valuable execution time. */
 	fseek(acc_DB_file_ptr, *record_pos_in_DB, SEEK_SET);
-
+	temp_char_holder[0] = fgetc(acc_DB_file_ptr);
 	/*	- Loop and grab characters till you face '$' character, which considered the end of the balance number */
 	while (temp_char_holder[0] != '$')
 	{
@@ -133,7 +140,7 @@ EN_serverError_t isAmountAvailable(ST_terminalData_t* termData, long* record_pos
 	}
 
 	/* Covert string to float using std function "atof()" */
-	temp_money_val = atof(temp_balacne_str);
+	temp_money_val = atoi(temp_balacne_str);
 
 	/* Check values and return !*/
 	if (termData->transAmount <= temp_money_val)
@@ -143,15 +150,13 @@ EN_serverError_t isAmountAvailable(ST_terminalData_t* termData, long* record_pos
 	}
 	else
 	{
-		rintf("LOW_BALANCE");
+		printf("LOW_BALANCE");
 		return LOW_BALANCE;
 	}
 
 	/* Close the file using fclose() function */
 	fclose(acc_DB_file_ptr);
 
-	/* Free file pointer memory (save memory!) */
-	free(acc_DB_file_ptr);
 
 }
 EN_serverError_t saveTransaction(ST_transaction_t* transData, long* record_pos_in_DB)
@@ -341,7 +346,6 @@ EN_serverError_t saveTransaction(ST_transaction_t* transData, long* record_pos_i
 
 		/* Free file pointer memory (save memory!) */
 		free(acc_DB_file_ptr);
-		free(temp_file);
 
 		return SERV_OK;
 	}
@@ -351,6 +355,17 @@ EN_serverError_t saveTransaction(ST_transaction_t* transData, long* record_pos_i
 EN_transState_t recieveTransactionData(ST_transaction_t* transData)
 {
 	long record_pos_in_DB = 0;
+
+	//EN_serverError_t is_Valid_Account;
+	//EN_serverError_t is_Amount_Available;
+	//EN_serverError_t save_Transaction;
+
+	//is_Valid_Account = isValidAccount(&transData->cardHolderData, &record_pos_in_DB);
+	//is_Amount_Available = isAmountAvailable(&transData->terminalData, &record_pos_in_DB);
+	//save_Transaction = saveTransaction(transData, &record_pos_in_DB);
+
+	printf("Check");
+
 	if (isValidAccount(&transData->cardHolderData, &record_pos_in_DB) == SERV_OK &&
 		isAmountAvailable(&transData->terminalData, &record_pos_in_DB) == SERV_OK &&
 		saveTransaction(transData, &record_pos_in_DB) == SERV_OK)

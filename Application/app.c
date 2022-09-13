@@ -21,13 +21,19 @@ void appStart(void)
 	setMaxAmount(&terminalData);
 
 	while (getCardHolderName(&cardData) != CARD_OK)
+	{
 		puts("\nXXX Error in input, Please Try again or click ( CTRL + C ) to terminate ! XXX\n");
+	}
 
 	while (getCardExpiryDate(&cardData) != CARD_OK)
+	{
 		puts("\nXXX Error in input, Please Try again or click ( CTRL + C ) to terminate ! XXX\n");
+	}
 
 	while (getCardPAN(&cardData) != CARD_OK)
+	{
 		puts("\nXXX Error in input, Please Try again or click ( CTRL + C ) to terminate ! XXX\n");
+	}
 
 	if (getTransactionDate(&terminalData) == TERM_OK)
 	{
@@ -38,7 +44,7 @@ void appStart(void)
 			{
 				while (getTransactionAmount(&terminalData) != TERM_OK)
 				{
-					printf("Enter Correct transaction amount !! \n");
+					printf("Enter Correct transaction amount, or Ctrl+C to terminate the process \n");
 				}
 
 				if (isBelowMaxAmount(&terminalData) == TERM_OK)
@@ -47,8 +53,8 @@ void appStart(void)
 					transData.terminalData = terminalData;
 					if (recieveTransactionData(&transData) == APPROVED)
 					{
+						printf("Transaction was done successfully, Thanks");
 						/* Do the getTransaction check*/
-
 					}
 					else if (recieveTransactionData(&transData) == DECLINED_INSUFFECIENT_FUND)
 					{
@@ -97,10 +103,8 @@ int main()
 	int choise = -1;
 	while (1)
 	{
-
 		appStart();
-
-		printf("\n Do you want to repeat the process again ? \n Make a number choice : \n (1) Yes \n (2) No \n");
+		printf("\n Do you want to repeat the process again ? \n enter a number to choose : \n (1) Yes \n (2) No \n");
 		fflush(stdin);
 		scanf("%d", &choise);
 		fflush(stdin);
@@ -116,7 +120,6 @@ int main()
 			choise = -1;
 			break;
 		}
-		
 	}
 	return 0;
 }

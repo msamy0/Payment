@@ -136,11 +136,16 @@ EN_terminalError_t isValidCardPAN(ST_cardData_t* cardData)
 /* Initialize Luhn_flag value ( -1 -> initial , 1 -> passed , 0 -> failed ) */
     uint8_t Luhn_flag = -1;
 
-    /* Dynamicall allocate a new Luhn_arr in the size of CardPAN string size to save memory */
-    uint8_t* Luhn_arr = (uint8_t*)malloc(strlen(cardData->primaryAccountNumber) * sizeof(uint8_t));
+    /* Dynamically allocate a new Luhn_arr in the size of CardPAN string size to save memory */
+    uint8_t* Luhn_arr = (uint8_t*)malloc((strlen(cardData->primaryAccountNumber)) * sizeof(uint8_t));
 
+    /*Initialize PAN array*/
+    for (int i = 0; i < _msize(Luhn_arr); i++)
+    {
+        Luhn_arr[i] = '\0';
+    }
     /* create static Luhn weights array */
-    uint8_t Luhn_weight[20] = { 2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1 };
+    uint8_t Luhn_weight[20] = {1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2 };
 
     /* Luhn_sum is used to determine summing of Luhn number generated after multiplication */
     uint8_t Luhn_sum = 0;
@@ -191,12 +196,10 @@ EN_terminalError_t getTransactionAmount(ST_terminalData_t* termData)
     /* CHeck whether it is  0 or not */
     if(termData->transAmount <=0)
     {
-        puts("INVALID_AMOUNT \n");
         return INVALID_AMOUNT;
     } 
     else 
     {
-        puts("ITERM_OK \n");
         return TERM_OK;
     }
 }
