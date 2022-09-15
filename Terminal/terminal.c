@@ -28,18 +28,18 @@ EN_terminalError_t setMaxAmount(ST_terminalData_t* termData)
 
 EN_terminalError_t getTransactionDate(ST_terminalData_t* termData)
 {
-    /* initialization string variables to save date portions retrived from time() function */
+    /* initialization string variables to save date portions fetched from time() function */
     uint8_t temp_day_str[3] ="\0";
     uint8_t temp_month_str[3] = "\0";
     uint8_t temp_year_str[5] = "\0";
 
-    /* initialization of transactionDate member with NULL to avoid expceptional handeling while using strcat() function */
+    /* initialization of transactionDate member with NULL to avoid exceptional handling while using strcat() function */
     for (int i = 0; i < sizeof(termData->transactionDate); i++)
     {
         termData->transactionDate[i] = NULL;
     }
 
-    /* Using builtin function time() to fetch the current PC time and save it a pre-defined struct in time.h header*/
+    /* Using built in function time() to fetch the current PC time and save it a pre-defined struct in time.h header*/
     time_t Current_t = time(NULL);
     struct tm Current_Time = *localtime(&Current_t);
 
@@ -49,7 +49,7 @@ EN_terminalError_t getTransactionDate(ST_terminalData_t* termData)
     sprintf(temp_month_str, "%d", Current_Time.tm_mon+1);/*Months from 0 to 11 */
     sprintf(temp_year_str,  "%d", Current_Time.tm_year+1900); /* Years counting from 0 to infinity, representing (1900) year as (0) */
     
-    /* Checks if the day is one digit value to add 0 before it for a consistant date formate */
+    /* Checks if the day is one digit value to add 0 before it for a consistent date formate */
     if (strlen(temp_day_str) < 2)
     {
         temp_day_str[1] = temp_day_str[0];

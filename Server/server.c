@@ -350,6 +350,7 @@ EN_serverError_t saveTransaction(ST_transaction_t* transData, long* record_pos_i
 		return SERV_OK;
 	}
 }
+
 //EN_serverError_t getTransaction(ST_transaction_t* transData)
 
 EN_transState_t recieveTransactionData(ST_transaction_t* transData)
@@ -389,6 +390,8 @@ EN_transState_t recieveTransactionData(ST_transaction_t* transData)
 	}
 
 }
+
+
 
 
 
