@@ -70,7 +70,7 @@ EN_terminalError_t getTransactionDate(ST_terminalData_t* termData)
     strcat(termData->transactionDate, "/");
     strcat(termData->transactionDate, temp_year_str);
 
-    /* Check for the date format to make sure it matches the Rubric regulations (it was only useful if date is entered manually !)*/
+    /* Check for the date format to make sure it matches the Rubric regulations (it was only useful if date is entered manually by user!)*/
     if (strlen(termData->transactionDate) != 10 ||
         (termData->transactionDate[2]) != '/' ||
         (termData->transactionDate[5]) != '/')
@@ -95,6 +95,7 @@ EN_terminalError_t isCardExpired(ST_cardData_t cardData, ST_terminalData_t termD
 
     uint8_t cardExpMonth = (cardData.cardExpirationDate[0] - '0') * 10 + (cardData.cardExpirationDate[1] - '0');
     uint8_t cardExpYear = (cardData.cardExpirationDate[3] - '0') * 10 + (cardData.cardExpirationDate[4] - '0');
+
     uint8_t currentMonth = (termData.transactionDate[3] - '0') * 10 + (termData.transactionDate[4] - '0');
     uint8_t currentYear = (termData.transactionDate[8] - '0') * 10 + (termData.transactionDate[9] - '0');
 

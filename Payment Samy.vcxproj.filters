@@ -24,19 +24,10 @@
     <ClCompile Include="Server\server.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestingOnly\TestCard.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Terminal\terminal.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestingOnly\TestServer1.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestingOnly\TestServer2.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestingOnly\TestServer3.c">
+    <ClCompile Include="TestingOnly\TestCard.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

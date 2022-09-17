@@ -4,14 +4,11 @@
 #include <string.h>
 #include <inttypes.h>
 
-
 //Project libraries definitions
 #include "../Card/card.h"
 #include "../Terminal/terminal.h"
 #include "../Application/app.h"
 #include "../Server/server.h"
-
-
 
 
 EN_serverError_t isValidAccount(ST_cardData_t* cardData, long* record_pos_in_DB)
@@ -87,8 +84,10 @@ EN_serverError_t isValidAccount(ST_cardData_t* cardData, long* record_pos_in_DB)
 	{
 		//puts(strcmp_result == 0 ? "Valid" : "Not");
 		if (!strcmp_result)
-		{
+		{	
+
 			return SERV_OK;
+
 		}
 		else
 		{
@@ -138,6 +137,9 @@ EN_serverError_t isAmountAvailable(ST_terminalData_t* termData, long* record_pos
 		/* if it is number add it to the temp holder*/
 		strcat(temp_balacne_str, temp_char_holder);
 	}
+	
+	/* Close the file using fclose() function */
+	fclose(acc_DB_file_ptr);
 
 	/* Covert string to float using std function "atof()" */
 	temp_money_val = atoi(temp_balacne_str);
@@ -145,17 +147,15 @@ EN_serverError_t isAmountAvailable(ST_terminalData_t* termData, long* record_pos
 	/* Check values and return !*/
 	if (termData->transAmount <= temp_money_val)
 	{
-		printf("SERV_OK");
+		//printf("SERV_OK /n");
 		return SERV_OK;
 	}
 	else
 	{
-		printf("LOW_BALANCE");
 		return LOW_BALANCE;
 	}
 
-	/* Close the file using fclose() function */
-	fclose(acc_DB_file_ptr);
+
 
 
 }
@@ -216,7 +216,7 @@ EN_serverError_t saveTransaction(ST_transaction_t* transData, long* record_pos_i
 		}
 		fgets(old_record, MAX_RECORD_SIZE, acc_DB_file_ptr);
 
-		/* create a new reorde for the client with clear balance value, ready to be updated */
+		/* create a new record for the client with clear balance value, ready to be updated */
 		strcpy(updated_record, old_record);
 		int pos_of_$ = strchr(updated_record, '$') - updated_record;
 		for (int i = pos_of_$; i >= 0; i--)
@@ -235,11 +235,13 @@ EN_serverError_t saveTransaction(ST_transaction_t* transData, long* record_pos_i
 				continue;
 			}
 		}
-		_strrev(buffer_balance_str);/* flipping the balance as it was fetched reversed from the record*/
+		/* flipping the balance as it was fetched reversed from the record*/
+		_strrev(buffer_balance_str);
 
+		buffer_balance_str[strlen(buffer_balance_str)-1] = '\0';
 		/* evaluation of the new balance value and pushing it to the new record that was cleared in the previous step */
 		/* convert string value to float value*/
-		old_balance_float = atof(buffer_balance_str);
+		old_balance_float = atoi(buffer_balance_str);
 		/* doing math*/
 		updated_balacne_float = old_balance_float - transData->terminalData.transAmount;
 		/* re-covert float value to string*/
@@ -341,52 +343,50 @@ EN_serverError_t saveTransaction(ST_transaction_t* transData, long* record_pos_i
 		fclose(trans_DB_file_ptr);
 
 		/* overwrite the old database with the new database created*/
-		remove("./DB/Accounts DB.txt");
-		rename("./DB/temp_Accounts DB.txt", "./DB/Accounts DB.txt");
+		if (remove("./DB/Accounts DB.txt") != 0)
+		{
+			printf("error: unable to remove the file");
+			fprintf(stderr, "system error (%d): %s\n", errno, strerror(errno));
+		}
 
-		/* Free file pointer memory (save memory!) */
-		free(acc_DB_file_ptr);
+		if (rename("./db/temp_Accounts db.txt", "./DB/Accounts DB.txt") == -1)
+		{
+			printf("error: unable to rename the file");
+			fprintf(stderr, "system error (%d): %s\n", errno, strerror(errno));
+		}
+
 
 		return SERV_OK;
 	}
 }
 
-//EN_serverError_t getTransaction(ST_transaction_t* transData)
-
 EN_transState_t recieveTransactionData(ST_transaction_t* transData)
 {
 	long record_pos_in_DB = 0;
 
-	//EN_serverError_t is_Valid_Account;
-	//EN_serverError_t is_Amount_Available;
-	//EN_serverError_t save_Transaction;
-
-	//is_Valid_Account = isValidAccount(&transData->cardHolderData, &record_pos_in_DB);
-	//is_Amount_Available = isAmountAvailable(&transData->terminalData, &record_pos_in_DB);
-	//save_Transaction = saveTransaction(transData, &record_pos_in_DB);
-
-	printf("Check");
-
-	if (isValidAccount(&transData->cardHolderData, &record_pos_in_DB) == SERV_OK &&
-		isAmountAvailable(&transData->terminalData, &record_pos_in_DB) == SERV_OK &&
-		saveTransaction(transData, &record_pos_in_DB) == SERV_OK)
+	if (isValidAccount(&transData->cardHolderData, &record_pos_in_DB) == SERV_OK)
 	{
-		return APPROVED;
+		if (isAmountAvailable(&transData->terminalData, &record_pos_in_DB) == SERV_OK)
+		{
+			if (saveTransaction(transData, &record_pos_in_DB) == SERV_OK)
+			{
+				return APPROVED;
+			}
+			else
+			{
+				return INTERNAL_SERVER_ERROR;
+			}
+
+		}
+		else
+		{
+			return DECLINED_INSUFFECIENT_FUND;
+		}
 	}
 
-	else if (isValidAccount(&transData->cardHolderData, &record_pos_in_DB) == ACCOUNT_NOT_FOUND)
+	else
 	{
 		return DECLINED_STOLEN_CARD;
-	}
-
-	else if (isAmountAvailable(&transData->terminalData, &record_pos_in_DB) == LOW_BALANCE)
-	{
-		return DECLINED_INSUFFECIENT_FUND;
-	}
-
-	else if (saveTransaction(transData, &record_pos_in_DB) == SAVING_FAILED)
-	{
-		return INTERNAL_SERVER_ERROR;
 	}
 
 }

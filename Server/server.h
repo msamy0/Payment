@@ -6,6 +6,7 @@
 //System library definitions
 #include <stdio.h>
 #include <stdint.h>
+#include <errno.h>
 
 //Project libraries definitions
 #include "../Card/card.h"

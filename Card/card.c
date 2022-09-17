@@ -13,9 +13,9 @@
 #include "../Server/server.h"
 
 
-/* Function detecated to get the card holder name from the user to and check its length */
+/* Function defecated to get the card holder name from the user to and check its length */
 EN_cardError_t getCardHolderName(ST_cardData_t* cardData)
-{	/* Refrestand flush standard input */
+{	/*  flush standard input */
 	fflush(stdin);
 
 	/* Ask user to input the CardHolderName */
@@ -74,19 +74,22 @@ EN_cardError_t getCardExpiryDate(ST_cardData_t* cardData)
 /* Function detecated to get and check the format of CardPAN*/
 EN_cardError_t getCardPAN(ST_cardData_t* cardData)
 {
+	/* Using PAN temporary string to hold the user input to be checked before being pushed to cardData structure*/
+	char PAN[1024] = "0";
+
 	/* Ask user to input the PAN */
 	printf("Kindly, input your PAN with no spaces \n");
-
+	
 	/* Using gets() function to input the PAN */
-	gets(cardData->primaryAccountNumber);
+	gets(PAN);
 
 	/*Testing the user input result*/
 	//printf("PAN you input is : %s \n", cardData->primaryAccountNumber);
 			
 	/*Check Pan lenght and Luhn algorithm check*/
-	if	(	strlen(cardData->primaryAccountNumber) > 19		||
-			strlen(cardData->primaryAccountNumber) < 16		
-			// || Luhn_flag == 0
+	if	(	strlen(PAN) > 19		||
+			strlen(PAN) < 16		
+		
 		)
 
 		{
@@ -95,6 +98,7 @@ EN_cardError_t getCardPAN(ST_cardData_t* cardData)
 
 	else
 		{
+		strcpy(cardData->primaryAccountNumber, PAN);
 		return CARD_OK;
 		}
 
