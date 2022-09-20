@@ -11,7 +11,7 @@
 #include "../Server/server.h"
 
 
-EN_serverError_t isValidAccount(ST_cardData_t* cardData, long* record_pos_in_DB)
+EN_serverError_t isValidAccount(ST_cardData_t* cardData, long* record_pos_in_DB,char* is_stolen_card_flag)
 {
 
 	FILE* acc_DB_file_ptr; /* Pointer to the file retrieved from fopen() function */
@@ -49,6 +49,13 @@ EN_serverError_t isValidAccount(ST_cardData_t* cardData, long* record_pos_in_DB)
 			temp_char_holder[0] = fgetc(acc_DB_file_ptr);
 		}
 
+		/* Get the card stolen value */
+		fseek(acc_DB_file_ptr, -2, SEEK_CUR);
+		temp_char_holder[0] = fgetc(acc_DB_file_ptr);
+		*is_stolen_card_flag = temp_char_holder[0];
+
+		temp_char_holder[0] = fgetc(acc_DB_file_ptr);
+
 		/* move to the next character after ',' as it is the first number in the PAN in this record */
 		temp_char_holder[0] = fgetc(acc_DB_file_ptr);
 
@@ -69,6 +76,7 @@ EN_serverError_t isValidAccount(ST_cardData_t* cardData, long* record_pos_in_DB)
 		if (!strcmp_result)
 		{
 			*record_pos_in_DB = ftell(acc_DB_file_ptr);
+
 			break;
 		}
 
@@ -80,10 +88,10 @@ EN_serverError_t isValidAccount(ST_cardData_t* cardData, long* record_pos_in_DB)
 
 
 	/* Close the file using fclose() function */
-	if (fclose(acc_DB_file_ptr) == 0)
-	{
+	fclose(acc_DB_file_ptr);
+	
 		//puts(strcmp_result == 0 ? "Valid" : "Not");
-		if (!strcmp_result)
+		if (!strcmp_result && *is_stolen_card_flag == '0')
 		{	
 
 			return SERV_OK;
@@ -93,11 +101,6 @@ EN_serverError_t isValidAccount(ST_cardData_t* cardData, long* record_pos_in_DB)
 		{
 			return ACCOUNT_NOT_FOUND;
 		}
-	}
-	else
-	{
-		return ACCOUNT_NOT_FOUND;
-	}
 
 
 
@@ -363,8 +366,9 @@ EN_serverError_t saveTransaction(ST_transaction_t* transData, long* record_pos_i
 EN_transState_t recieveTransactionData(ST_transaction_t* transData)
 {
 	long record_pos_in_DB = 0;
+	uint8_t is_stolen_card_flag = 0;
 
-	if (isValidAccount(&transData->cardHolderData, &record_pos_in_DB) == SERV_OK)
+	if (isValidAccount(&transData->cardHolderData, &record_pos_in_DB, &is_stolen_card_flag) == SERV_OK)
 	{
 		if (isAmountAvailable(&transData->terminalData, &record_pos_in_DB) == SERV_OK)
 		{
@@ -386,7 +390,15 @@ EN_transState_t recieveTransactionData(ST_transaction_t* transData)
 
 	else
 	{
-		return DECLINED_STOLEN_CARD;
+		if (is_stolen_card_flag == '1')
+
+		{
+			return DECLINED_STOLEN_CARD;
+		}
+		else
+		{
+			return CARD_IS_NOT_IN_DATABASE;
+		}
 	}
 
 }

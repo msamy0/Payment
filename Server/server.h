@@ -26,7 +26,7 @@ typedef struct ST_accountsDB_t
 
 typedef enum EN_transState_t
 {
-	APPROVED, DECLINED_INSUFFECIENT_FUND, DECLINED_STOLEN_CARD, INTERNAL_SERVER_ERROR
+	APPROVED, DECLINED_INSUFFECIENT_FUND, DECLINED_STOLEN_CARD, INTERNAL_SERVER_ERROR, CARD_IS_NOT_IN_DATABASE
 }EN_transState_t;
 
 typedef enum EN_serverError_t {
@@ -44,7 +44,7 @@ typedef struct ST_transaction_t
 
 
 EN_transState_t recieveTransactionData(ST_transaction_t* transData);
-EN_serverError_t isValidAccount(ST_cardData_t* cardData, long* record_pos_in_DB);
+EN_serverError_t isValidAccount(ST_cardData_t* cardData, long* record_pos_in_DB, char* is_stolen_card_flag);
 EN_serverError_t isAmountAvailable(ST_terminalData_t* termData, long* record_pos_in_DB);
 EN_serverError_t saveTransaction(ST_transaction_t* transData, long* record_pos_in_DB);
 EN_serverError_t getTransaction(ST_transaction_t* transData);

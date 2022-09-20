@@ -64,25 +64,25 @@ void appStart(void)
 
 					if (recieveTransactionData_result == APPROVED)
 					{
-						printf("Transaction was done successfully, Thanks");
+						printf("Transaction was done successfully, Thanks\nTRANSACTION SUCCEEDED !! \n");
 						/* Do the getTransaction check*/
 					}
 
 					/* if the server failed to complete the process due to low balance in the user account, it will prompt the following*/
 					else if (recieveTransactionData_result == DECLINED_INSUFFECIENT_FUND)
 					{
-						printf("Error : DECLINED_INSUFFECIENT_FUND \n");
+						printf("Error : DECLINED_INSUFFECIENT_FUND \nTRANSACTION FAILED!!\n");
 					}
 					/* if the server failed to complete the process due to unknown PAN which is not in the database, it will prompt the following*/
 					else if (recieveTransactionData_result == DECLINED_STOLEN_CARD)
 					{
-						printf("Error : DECLINED_STOLEN_CARD \n");
+						printf("Error : DECLINED_STOLEN_CARD \nThis card was blocked in database by its owner, please call customer service\nTRANSACTION FAILED!!\n");
 					}
 
 					/* if the server failed to process of save the transaction due to any issue, it will prompt the following*/
-					else if (recieveTransactionData_result == INTERNAL_SERVER_ERROR)
+					else if (recieveTransactionData_result == CARD_IS_NOT_IN_DATABASE)
 					{
-						printf("Error : INTERNAL_SERVER_ERROR \n");
+						printf("Error : CARD_IS_NOT_IN_DATABASE\nTRANSACTION FAILED!!\n");
 					}
 
 
@@ -128,7 +128,7 @@ int main()
 		appStart();
 
 		/* after handling a successful or failed process, the user is asked if he wants to do another process */
-		printf("\n Do you want to repeat the process again ? \n enter a number to choose : \n (1) Yes \n (2) No \n");
+		printf("\n.\n.\n.\n.\n.\nDo you want to repeat the process again ? \nEnter a number to choose : \n (1) Yes \n (2) No \n");
 
 		/* flushing the std input*/
 		fflush(stdin);
