@@ -1,3 +1,13 @@
+/*
+This project was developed for educational purposes during FWD embedded systems track Aug.2022
+developed by : Mohamed Samy
+email : msamygawad@gmail.com
+version : v1.0
+
+feel free to use for educational purposes..
+
+*/
+
 //System liberary definations
 #include <stdio.h>
 #include <stdint.h>
